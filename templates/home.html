@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Blogs 
+{% endblock title %}
+
+{% block content %}
+{% include 'headers/Navbar.html' %}
+
+
+
+<br><br><br>
+
+<div class="flex">
+    <div class="w-3/4">
+        {% for post in posts %}
+        <div class="ml-5">
+            <a href="{% url 'post-detail' post.pk %}" class="text-xl font-bold text-blue-700">{{ post.title }}</a>
+            <p class="text-sm text-gray-500 mt-2">Published on {{ post.created_at|date:"F d, Y" }}, {{ post.created_at|time:"H:i" }}, by admin</p>
+            <p class="mt-2">{{ post.content|truncatewords:10 }}</p>
+            <!-- Add other fields as needed -->
+        </div>
+        <hr class="my-4">
+        {% endfor %}
+    </div>
+
+    <div class="w-1/4 bg-gray-200 p-4 ml-4">
+        <h1 class="font-bold text-2xl">My block</h1>
+        <p class="font-bold ">This is my blog</p>
+    </div>
+</div>
+<div class="pagination flex justify-center items-center mt-4">
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="pagination-link border p-2">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link border p-2">previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="pagination-link current-page border p-2">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="pagination-link border p-2">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="pagination-link border p-2">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link border p-2">last &raquo;</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+{% endblock content %}

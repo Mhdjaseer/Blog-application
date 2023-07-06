@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Register
+{% endblock title %}
+
+{% block content %}
+
+<section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a href="#" class="flex items-center mb-6 text-md font-semibold text-gray-900 dark:text-white">
+            {% if form.non_field_errors %}
+            <div class="text-red-500">
+                {{ form.non_field_errors.as_text }}
+            </div>
+        {% endif %}
+        </a>
+        <div class="w-full max-w-md bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    Sign up for an account
+                </h1>
+                <form class="space-y-4 md:space-y-6" method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    {% load widget_tweaks %}
+                    <div class="flex flex-col">
+                        <label for="firstname" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                       {{form.first_name|add_class:"input-field h-10 rounded "|attr:"first name"}}
+                       
+                        <!-- <input type="text" name="firstname" id="firstname" class="" placeholder="John" required> -->
+                        {% if form.first_name.errors %}
+                            <div class="text-red-500">
+                                {{ form.first_name.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="lastname" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                        {{form.last_name|add_class:"input-field h-10 rounded "|attr:"last name"}}
+
+                        
+                       
+                        {% if form.last_name.errors %}
+                            <div class="text-red-500">
+                                {{ form.last_name.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="email" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        {{form.email|add_class:"input-field h-10 rounded "|attr:"Email"}}
+
+                        {% if form.email.errors %}
+                            <div class="text-red-500">
+                                {{ form.email.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="password" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                        {{form.password1|add_class:"input-field h-10 rounded "|attr:"password"}}
+
+                        {% if form.password1.errors %}
+                            <div class="text-red-500">
+                                {{ form.password1.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="password" class="mb-2 text-sm font-medium text-gray-900 dark:text-white"> Repeat Password</label>
+                        {{form.password2|add_class:"input-field h-10 rounded "|attr:"password"}}
+
+                        {% if form.password2.errors %}
+                            <div class="text-red-500">
+                                {{ form.password2.errors.as_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-green-400 h-10 rounded-full  font-bold text-white">Register</button>
+                    <p class="text-sm font-light text-gray-900 dark:text-gray-400">
+                        Already have an account? <a href="{% url 'login' %}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+@media (max-width: 900px) {
+  .bg-gray-50 {
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.75rem;
+  }
+  
+  .button-primary {
+    width: 100%;
+  }
+}
+</style>
+
+{% endblock content %}

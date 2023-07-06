@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}
+   Post Detial
+{% endblock title %}
+
+{% block content %}
+{% include 'headers/Navbar.html' %}
+
+
+<br><br><br>
+
+<div class="flex pl-5 pt-5">
+    <div class="w-3/4">
+        <h2 class="text-xl font-bold text-blue-700">{{ post.title }}</h2>
+        <hr class="my-4">
+        <p class="text-sm text-gray-500 mt-2">Published on {{ post.created_at|date:"F d, Y" }}, {{ post.created_at|time:"H:i" }}, by admin</p>
+        <p class="mt-2">{{ post.content }}</p>
+        <hr class="my-4">
+        <h3 class="text-lg font-bold">Comments</h3>
+        {% for comment in comments %}
+        
+            <p>{{ comment.content }}</p>
+            <p class="text-sm text-gray-500"> Commented by {{ comment.user.first_name }}{{ comment.user.last_name }}  , {{ comment.created_at|date:"F d, Y" }}, {{ comment.created_at|time:"H:i" }}</p>
+            <hr class="my-2">
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        <h3 class="text-lg font-bold">Likes</h3>
+        <p>{{ likes.count }} likes</p>
+
+        <form id="commentForm">
+            <textarea id="comment" name="comment" class="bg-gray-200" rows="4" required></textarea>
+            <button type="submit" class="share-button bg-blue-600 rounded p-2 text-white font-bold">Add Comment</button>
+        </form>
+
+        <a href="#" id="likeButton" class="share-link">Like</a>
+
+        <hr class="my-4">
+        <h1 class="font-bold text-2xl">Share "{{post.title}}"  By Email</h1>
+        <form id="shareForm">
+            <div class="mb-4">
+                <label for="name">Your Name:</label>
+                <br>
+                <input type="text" id="name" name="name" class="bg-gray-200" required>
+            </div>
+            <div class="mb-4">
+                <label for="email">Your Email:</label>
+                <br>
+                <input type="email" id="email" name="email" class="bg-gray-200" required>
+            </div>
+            <div class="mb-4">
+                <label for="recipient">Recipient's Email:</label> <br>
+                <input type="email" id="recipient" class="bg-gray-200" name="recipient" required>
+            </div>
+            <div class="mb-4">
+                <label for="comment">Comment:</label>
+                <br>
+                <textarea id="comment" name="comment" class="bg-gray-200"    rows="4" required></textarea>
+            </div>
+            <button type="submit" class="share-button bg-blue-600 rounded p-2 text-white font-bold">Send Email</button>
+        </form>
+    </div>
+
+    <div class="w-1/4 bg-gray-200 p-4 ml-4">
+        <h1 class="font-bold text-2xl">My block</h1>
+        <p class="font-bold ">This is my blog</p>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Comment submission
+        $('#commentForm').submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get form values
+            const comment = $('#comment').val();
+
+            // Send AJAX request to submit comment
+            $.ajax({
+                url: '{% url "comment-submit" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    post_id: '{{ post.pk }}',
+                    comment: comment
+                },
+                success: function(response) {
+                    // Handle success response
+                    // Refresh or update the comments section
+                },
+                error: function(xhr, textStatus, error) {
+                    // Handle error response
+                }
+            });
+
+            // Clear comment input
+            $('#comment').val('');
+        });
+
+        // Like submission
+        $('#likeButton').click(function(event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Send AJAX request to submit like
+            $.ajax({
+                url: '{% url "like-submit" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    post_id: '{{ post.pk }}'
+                },
+                success: function(response) {
+                    // Handle success response
+                    // Update the like count
+                },
+                error: function(xhr, textStatus, error) {
+                    // Handle error response
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.getElementById("shareForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Get form values
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const recipient = document.getElementById("recipient").value;
+        const comment = document.getElementById("comment").value;
+
+        // Compose email subject and body
+        const subject = encodeURIComponent("Check out this post: " + "{{ post.title }}");
+        const body = encodeURIComponent("Name: " + name + "%0D%0A" +
+                                        "Email: " + email + "%0D%0A" +
+                                        "Recipient: " + recipient + "%0D%0A" +
+                                        "Comment: " + comment + "%0D%0A" +
+                                        "Post URL: " + "{{ post.get_absolute_url }}");
+
+        // Generate mailto URL
+        const mailtoURL = "mailto:" + recipient + "?subject=" + subject + "&body=" + body;
+
+        // Open user's email client
+        window.location.href = mailtoURL;
+    });
+</script>
+    
+{% endblock content %}
