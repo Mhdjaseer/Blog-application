@@ -51,6 +51,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+
 AUTHENTICATION_BACKENDS = [
     'blog.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
